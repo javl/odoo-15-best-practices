@@ -5,7 +5,7 @@
 I'm planning on using this repo to write down best practices and other types of useful info on using Odoo 15, 
 as well as some more generic suggestions for working in Python. Feel free to contribute!
 
-## Names for relational fields (Many2one / One2many / Many2Many)
+## Naming relational fields (Many2one / One2many / Many2Many)
 
 When using relational fields use the related model name as field name and add `_id` when using `Many2one` (as this relation points to a single object) or `_ids` when using `One2many` or `Many2many` (which can point to multiple objects).
 
@@ -72,4 +72,36 @@ Help on function check_if_numeric in module __main__:
 check_if_numeric(value)
     Takes a string and checks if it's value is numeric.
     Returns True if numeric, or False if not numeric or input was not a string.
+```
+
+## Specify what view to use for an action
+
+Especially useful when creating your own custom view for an inherited model when you don't want to make changes to the original view. For example, when inheriting `res.partner` and you need a second page with your own contact settings, while keeping the original contact pages intact:
+
+```
+    <!-- The main settings for our view -->
+    <record id="list_beneficiaries" model="ir.actions.act_window" >
+      <field name="name">Beneficiaries</field>
+      <field name="res_model">res.partner</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- The tree view -->
+    <record id="list_beneficiaries_tree" model="ir.actions.act_window.view">
+      <field name="sequence" eval="1"/>
+      <field name="view_mode">tree</field>
+      <field name="view_id" ref="beneficiaries_view_tree"/>
+      <field name="act_window_id" ref="list_beneficiaries"/>
+    </record>
+
+    <!-- The form view -->
+    <record id="list_beneficiaries_form" model="ir.actions.act_window.view">
+      <field name="sequence" eval="2"/>
+      <field name="view_mode">form</field>
+      <field name="view_id" ref="beneficiaries_view_form"/>
+      <field name="act_window_id" ref="list_beneficiaries"/>
+    </record>
+
+    <!-- Add the button for these views -->
+    <menuitem name="Beneficiaries" id="menu_beneficiaries" action="list_beneficiaries" />
 ```
