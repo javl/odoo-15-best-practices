@@ -105,3 +105,25 @@ Especially useful when creating your own custom view for an inherited model when
     <!-- Add the button for these views -->
     <menuitem name="Beneficiaries" id="menu_beneficiaries" action="list_beneficiaries" />
 ```
+
+## Open tree view record in new page
+By default clicking a record in a tree view will open the record in a modal. You can't change this behaviour for the entire line, but you can create a button that will open the record in its own (full page) view:
+
+In the tree XML:
+```
+    <button type="object" string="Open" name="open_my_model" icon="fa-external-link"/>
+```
+
+And in the model:
+```
+    def open_my_model(self):
+        """ Opens this model in its own view """
+        return {
+            'type': 'ir.actions.act_window',
+            'name': self.name,
+            'res_model': 'my_module.my_model',
+            'view_mode': 'form',
+            'res_id': self.id,
+            'target': 'current',
+        }
+```
